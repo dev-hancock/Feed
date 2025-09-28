@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/docker/" />
+  <Folder Name="/docker/quartz/">
+    <File Path="docker/quartz/Dockerfile" />
+  </Folder>
+  <Folder Name="/docker/quartz/scripts/">
+    <File Path="docker/quartz/scripts/init.sql" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".env" />
+  </Folder>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
+  <Project Path="Feed/Feed.csproj" />
+</Solution>

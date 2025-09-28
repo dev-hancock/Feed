@@ -1,0 +1,80 @@
+services:
+
+  db:
+    image: ${POSTGRES_IMAGE}
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_DB: ${FEED_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - data.db:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  quartz:
+    build:
+      context: ./docker/quartz
+      dockerfile: Dockerfile
+    image: quartz:latest
+    container_name: quartz
+    restart: always
+    environment:
+      POSTGRES_DB: ${QUARTZ_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - data.quartz:/var/lib/postgresql/data
+    networks:
+      - backend
+   
+  transport:
+    image: ${POSTGRES_IMAGE}
+    container_name: transport
+    restart: always
+    environment:
+      POSTGRES_DB: ${TRANSPORT_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - data.transport:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  feed:
+    image: ${DOCKER_REGISTRY-}feed
+    build:
+      context: .
+      dockerfile: Feed/Dockerfile
+    environment:
+      ASPNETCORE_URLS: http://0.0.0.0:8080
+      ConnectionStrings__Default: >
+        Host=db;Port=5432;Database=${FEED_DB};
+        Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      ConnectionStrings__Quartz: >
+        Host=quartz;Port=5432;Database=${QUARTZ_DB};
+        Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      Transport__Host: transport
+      Transport__Port: 5432
+      Transport__Database: ${TRANSPORT_DB}
+      Transport__Schema: transport
+      Transport__Username: ${POSTGRES_USER}
+      Transport__Password: ${POSTGRES_PASSWORD}
+    ports:
+      - 5000:8080
+    networks:
+      - backend
+    depends_on:
+      - db
+      - quartz
+      - transport
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  data.db:
+  data.quartz:
+  data.transport:
