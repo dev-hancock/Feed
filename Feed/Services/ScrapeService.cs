@@ -1,8 +1,5 @@
 ﻿using AngleSharp;
-using Feed.Consumers;
-using Feed.Events;
 using Feed.Models;
-using Quartz;
 
 namespace Feed.Services;
 
@@ -13,7 +10,6 @@ public interface IScrapeService
 
 public class ScrapeResult
 {
-
 }
 
 public class ScrapeService : IScrapeService

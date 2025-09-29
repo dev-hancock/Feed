@@ -29,19 +29,6 @@ services:
     networks:
       - backend
    
-  transport:
-    image: ${POSTGRES_IMAGE}
-    container_name: transport
-    restart: always
-    environment:
-      POSTGRES_DB: ${TRANSPORT_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - data.transport:/var/lib/postgresql/data
-    networks:
-      - backend
-
   feed:
     image: ${DOCKER_REGISTRY-}feed
     build:
@@ -55,12 +42,6 @@ services:
       ConnectionStrings__Quartz: >
         Host=quartz;Port=5432;Database=${QUARTZ_DB};
         Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
-      Transport__Host: transport
-      Transport__Port: 5432
-      Transport__Database: ${TRANSPORT_DB}
-      Transport__Schema: transport
-      Transport__Username: ${POSTGRES_USER}
-      Transport__Password: ${POSTGRES_PASSWORD}
     ports:
       - 5000:8080
     networks:
@@ -68,7 +49,6 @@ services:
     depends_on:
       - db
       - quartz
-      - transport
 
 networks:
   backend:
@@ -77,4 +57,3 @@ networks:
 volumes:
   data.db:
   data.quartz:
-  data.transport:

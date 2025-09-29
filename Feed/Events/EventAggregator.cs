@@ -11,7 +11,8 @@ public class EventAggregator : IEventAggregator
         return _events.OnNext(value, token);
     }
 
-    public async IAsyncEnumerable<T> Subscribe<T>([EnumeratorCancellation] CancellationToken token = default) where T : IEvent
+    public async IAsyncEnumerable<T> Subscribe<T>([EnumeratorCancellation] CancellationToken token = default)
+        where T : IEvent
     {
         await foreach (var value in _events.Subscribe(token))
         {

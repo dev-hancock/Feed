@@ -1,20 +1,21 @@
-﻿
-using Feed.Persistence;
+﻿using Feed.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Feed.Services
+namespace Feed.Services;
+
+public class MigrationService(IServiceProvider services) : IHostedService
 {
-    public class MigrationService(IServiceProvider services) : IHostedService
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
-            await using var scope = services.CreateAsyncScope();
+        await using var scope = services.CreateAsyncScope();
 
-            var context = scope.ServiceProvider.GetRequiredService<FeedDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<FeedDbContext>();
 
-            await context.Database.MigrateAsync(cancellationToken);
-        }
+        await context.Database.MigrateAsync(cancellationToken);
+    }
 
-        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
     }
 }

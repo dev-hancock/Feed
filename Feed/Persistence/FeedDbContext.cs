@@ -1,6 +1,5 @@
 ﻿using Feed.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Feed.Persistence;

@@ -1,6 +1,8 @@
-﻿namespace Feed.Consumers;
+﻿using Feed.Events;
 
-public class ScrapeEvent
+namespace Feed.Consumers;
+
+public class ArtifactChangedEvent : IEvent
 {
     public Guid Id { get; set; }
 

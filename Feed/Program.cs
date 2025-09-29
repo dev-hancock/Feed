@@ -26,10 +26,7 @@ public class Program
 
     private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<FeedDbContext>(opt =>
-        {
-            opt.UseNpgsql(configuration.GetConnectionString("Default"));
-        });
+        services.AddDbContext<FeedDbContext>(opt => { opt.UseNpgsql(configuration.GetConnectionString("Default")); });
 
         services.AddQuartz(x =>
         {
@@ -50,16 +47,11 @@ public class Program
         services.AddGrpc();
         services.AddGrpcReflection();
 
-        services.Configure<SqlTransportOptions>(configuration.GetSection("Transport"));
-        services.AddPostgresMigrationHostedService();
         services.AddMassTransit(x =>
         {
             x.AddConsumer<ArtifactEventsConsumer>();
 
-            x.UsingPostgres((context, cfg) =>
-            {
-                cfg.ConfigureEndpoints(context);
-            });
+            x.UsingInMemory((context, cfg) => { cfg.ConfigureEndpoints(context); });
         });
 
         services.AddSingleton<IEventAggregator, EventAggregator>();
@@ -72,7 +64,7 @@ public class Program
                 .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
         }));
 
-        services.AddSingleton<IScrapeService, ScrapeService>(); 
+        services.AddSingleton<IScrapeService, ScrapeService>();
         services.AddHostedService<MigrationService>();
     }
 
@@ -90,4 +82,3 @@ public class Program
         }
     }
 }
-
