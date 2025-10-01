@@ -58,44 +58,4 @@ public class EventStream : IEventStream
             channel.Writer.Complete();
         }
     }
-
-    public IDisposable Subscribe<T>(Func<T, Task> action, CancellationToken token = default)
-    {
-        return Subscribe<T>((item, _) => action.Invoke(item), token);
-    }
-
-    public IDisposable Subscribe<T>(Func<T, CancellationToken, Task> action, CancellationToken token = default)
-    {
-        var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
-
-        _ = Task.Run(async () =>
-        {
-            await foreach (var item in this.WithCancellation(cts.Token))
-            {
-                if (item is not T typed)
-                {
-                    continue;
-                }
-
-                try
-                {
-                    await action.Invoke(typed, cts.Token);
-                }
-                catch
-                {
-                    // ignore
-                }
-            }
-        }, cts.Token);
-
-        return new CancellationDisposable(cts);
-    }
-}
-
-public sealed class CancellationDisposable(CancellationTokenSource cts) : IDisposable
-{
-    public void Dispose()
-    {
-        cts.Cancel();
-    }
 }

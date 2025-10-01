@@ -11,14 +11,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="AngleSharp" Version="1.3.0" />
-		<PackageReference Include="ErrorOr" Version="2.0.1" />
-		<PackageReference Include="FluentValidation" Version="12.0.0" />
 		<PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
 		<PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.71.0" />
 		<PackageReference Include="Grpc.AspNetCore.Web" Version="2.71.0" />
-		<PackageReference Include="MassTransit" Version="8.5.3" />
-		<PackageReference Include="MassTransit.SqlTransport.PostgreSQL" Version="8.5.3" />
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0-rc.1.25451.107" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
 		  <PrivateAssets>all</PrivateAssets>
@@ -33,7 +28,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Protobuf Include="Grpc\Protos\feed.proto" GrpcServices="Server" ProtoRoot="Grpc\Protos" />
+		<Protobuf Include="Grpc\Protos\v1\feed.proto" GrpcServices="Server" ProtoRoot="Grpc\Protos" />
 	</ItemGroup>
 
 </Project>

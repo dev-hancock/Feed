@@ -1,8 +1,10 @@
-﻿namespace Feed.Consumers;
+﻿using Feed.Events;
 
-public class ScrapeEvent
+namespace Feed.Models;
+
+public class ArtifactChangedEvent : IEvent
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; }
 
     public string Item { get; set; }
 

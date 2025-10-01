@@ -1,9 +1,11 @@
-using Feed.Consumers;
 using Feed.Events;
-using Feed.Grpc.Services;
+using Feed.Features.Feeds;
+using Feed.Grpc;
+using Feed.Grpc.Services.v1;
+using Feed.Interceptors;
+using Feed.interfaces;
 using Feed.Persistence;
 using Feed.Services;
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
@@ -44,17 +46,13 @@ public class Program
             opt.WaitForJobsToComplete = true;
         });
 
-        services.AddGrpc();
+        services.AddGrpc(opt =>
+        {
+            opt.Interceptors.Add<ExceptionInterceptor>();
+        });
         services.AddGrpcReflection();
 
-        services.AddMassTransit(x =>
-        {
-            x.AddConsumer<ArtifactEventsConsumer>();
-
-            x.UsingInMemory((context, cfg) => { cfg.ConfigureEndpoints(context); });
-        });
-
-        services.AddSingleton<IEventAggregator, EventAggregator>();
+        services.AddSingleton<IEventStream, EventStream>();
 
         services.AddCors(o => o.AddPolicy("AllowAll", builder =>
         {
@@ -66,6 +64,12 @@ public class Program
 
         services.AddSingleton<IScrapeService, ScrapeService>();
         services.AddHostedService<MigrationService>();
+
+        services.AddTransient<IValidator<CreateFeedRequest>, CreateFeedValidator>();
+
+        services.AddTransient<CreateFeedHandler>();
+        services.AddTransient<DeleteFeedHandler>();
+        services.AddTransient<StreamFeedHandler>();
     }
 
     private static void Configure(WebApplication app)

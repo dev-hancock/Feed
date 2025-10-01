@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+option csharp_namespace = "Feed.Grpc";
+
+package feed.v1;
+
+service Feed {
+    rpc Create (CreateFeedRequest) returns (CreateFeedResponse);
+    rpc Delete (DeleteFeedRequest) returns (DeleteFeedResponse);
+    rpc Stream (StreamFeedRequest) returns (stream FeedEvent);
+}
+
+message CreateFeedRequest {
+    string url = 1;
+    int32 interval = 2;
+    repeated Selector selectors = 3;  
+}
+
+message Selector {
+    string item = 1;
+    string title = 2;
+    string link = 3;
+    string description = 4;
+    string date = 5;
+}
+
+message CreateFeedResponse {
+    string id = 1;
+}
+
+message DeleteFeedRequest {
+    string id = 1;
+}
+
+message DeleteFeedResponse {
+}
+
+message StreamFeedRequest {
+    string id = 1;
+}
+
+message FeedEvent {
+    string item = 1;
+    string title = 2;
+    string link = 3;
+    string description = 4;
+    string date = 5;
+}

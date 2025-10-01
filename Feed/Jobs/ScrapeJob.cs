@@ -1,13 +1,13 @@
-﻿using Feed.Consumers;
+﻿using Feed.Events;
+using Feed.Models;
 using Feed.Persistence;
 using Feed.Services;
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
 namespace Feed.Jobs;
 
-public class ScrapeJob(FeedDbContext db, IScrapeService service, IPublishEndpoint endpoint) : IJob
+public class ScrapeJob(FeedDbContext db, IScrapeService service, IEventStream events) : IJob
 {
     public async Task Execute(IJobExecutionContext context)
     {
@@ -29,10 +29,10 @@ public class ScrapeJob(FeedDbContext db, IScrapeService service, IPublishEndpoin
         // Temporary code to simulate publishing events
         foreach (var artifact in plan.Artifacts)
         {
-            await endpoint.Publish(
+            await events.Publish(
                 new ArtifactChangedEvent
                 {
-                    Id = id,
+                    Id = id.ToString(),
                     Item = "Item",
                     Title = "Title",
                     Link = "Link",
